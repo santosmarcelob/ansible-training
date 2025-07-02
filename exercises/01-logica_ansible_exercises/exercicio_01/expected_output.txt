@@ -1,0 +1,2 @@
+TASK [Mostrar se é ímpar]
+O número 7 é ímpar.

@@ -1,0 +1,2 @@
+TASK [Mostrar resultado]
+Soma de 1 até 5 é 15

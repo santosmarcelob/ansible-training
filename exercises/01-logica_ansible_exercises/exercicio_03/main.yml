@@ -1,0 +1,17 @@
+---
+- name: Exercicio 03 - Soma até N
+  hosts: localhost
+  gather_facts: false
+  vars:
+    N: 5
+    lista_numeros: "{{ range(1, N + 1) | list }}"
+
+  tasks:
+    - name: Somar os números
+      set_fact:
+        soma: "{{ soma | default(0) + item }}"
+      loop: "{{ lista_numeros }}"
+
+    - name: Mostrar resultado
+      debug:
+        msg: "Soma de 1 até {{ N }} é {{ soma }}"

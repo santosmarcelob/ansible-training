@@ -1,0 +1,8 @@
+---
+- name: Exercicio 01 - Testar hosts com ping
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Verificar conectividade
+      ping:

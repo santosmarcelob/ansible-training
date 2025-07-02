@@ -1,0 +1,10 @@
+---
+- name: Exercicio 02 - Criar usuário
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Criar usuário ansible_user
+      user:
+        name: ansible_user
+        state: present

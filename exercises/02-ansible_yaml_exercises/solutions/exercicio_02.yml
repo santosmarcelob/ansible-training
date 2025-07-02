@@ -1,0 +1,11 @@
+---
+- name: Exercicio 02 - Variável e debug
+  hosts: localhost
+  gather_facts: false
+  vars:
+    linguagem: Ansible
+
+  tasks:
+    - name: Mostrar linguagem
+      debug:
+        msg: "Estou aprendendo {{ linguagem }}"
