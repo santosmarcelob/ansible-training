@@ -1,0 +1,10 @@
+---
+- name: Exercicio 03 - Condicionais
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Verificar se o arquivo existe
+      debug:
+        msg: "O arquivo existe!"
+      when: ansible_facts['os_family'] == "Linux"

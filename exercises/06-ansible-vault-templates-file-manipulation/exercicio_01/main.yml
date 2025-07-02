@@ -1,0 +1,10 @@
+---
+- name: Exercicio 01 - Ansible Vault
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Criar arquivo criptografado
+      copy:
+        content: "Este é um arquivo criptografado"
+        dest: "/tmp/arquivo_vault.txt"

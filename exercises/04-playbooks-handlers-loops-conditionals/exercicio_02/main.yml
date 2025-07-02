@@ -1,0 +1,14 @@
+---
+- name: Exercicio 02 - Loops
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Criar múltiplos arquivos
+      copy:
+        content: "Este é o arquivo {{ item }}"
+        dest: "/tmp/arquivo_{{ item }}.txt"
+      loop:
+        - 1
+        - 2
+        - 3

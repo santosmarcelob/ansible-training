@@ -1,0 +1,13 @@
+---
+- name: Exercicio 02 - Templates Jinja2
+  hosts: localhost
+  gather_facts: false
+  vars:
+    app_name: MeuApp
+    app_port: 8080
+
+  tasks:
+    - name: Gerar arquivo de configuração
+      template:
+        src: config.j2
+        dest: /tmp/config.ini
