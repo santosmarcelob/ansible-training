@@ -1,0 +1,23 @@
+---
+- name: Exemplo de uso de variáveis
+  hosts: localhost
+  vars:
+    usuario_admin: admin_ansible
+    diretorio_log: /var/log/aplicacao
+
+  tasks:
+    - name: Criar diretório de log
+      ansible.builtin.file:
+        path: "{{ diretorio_log }}"
+        state: directory
+        mode: '0755'
+
+    - name: Adicionar usuário administrador
+      ansible.builtin.user:
+        name: "{{ usuario_admin }}"
+        state: present
+        shell: /bin/bash
+
+    - name: Exibir mensagem com variável
+      ansible.builtin.debug:
+        msg: "O usuário {{ usuario_admin }} foi criado e o diretório de log é {{ diretorio_log }}."

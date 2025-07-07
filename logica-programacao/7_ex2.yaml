@@ -1,0 +1,37 @@
+---
+- name: Configurar e iniciar serviço
+  hosts: webservers
+  vars:
+    habilitar_nginx: true
+    habilitar_apache: false
+
+  tasks:
+    - name: Instalar Nginx se habilitado
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+      when: habilitar_nginx
+      become: true
+
+    - name: Iniciar Nginx se habilitado
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+      when: habilitar_nginx
+      become: true
+
+    - name: Instalar Apache se habilitado
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+      when: habilitar_apache
+      become: true
+
+    - name: Iniciar Apache se habilitado
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true
+      when: habilitar_apache
+      become: true

@@ -1,0 +1,17 @@
+---
+- name: Criar múltiplos diretórios
+  hosts: appservers
+  vars:
+    diretorios_aplicacao:
+      - /opt/app/data
+      - /opt/app/logs
+      - /opt/app/config
+
+  tasks:
+    - name: Criar diretório {{ item }}
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ diretorios_aplicacao }}"
+      become: true

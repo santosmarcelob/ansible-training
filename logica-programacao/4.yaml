@@ -1,0 +1,8 @@
+- name: Instalar múltiplos pacotes
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apache2
+    - php
+    - mysql-server

@@ -1,0 +1,9 @@
+- name: Criar múltiplos usuários
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    state: present
+    shell: "{{ item.shell }}"
+  loop:
+    - { name: 'joao', shell: '/bin/bash' }
+    - { name: 'maria', shell: '/bin/sh' }
+    - { name: 'pedro', shell: '/sbin/nologin' }

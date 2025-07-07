@@ -1,0 +1,48 @@
+---
+- name: Gerenciar usuários e grupos
+  hosts: all
+  vars:
+    usuarios_a_gerenciar:
+      - name: devops_user
+        uid: 2001
+        groups: [sudo, devops]
+        state: present
+        create_home: true
+      - name: monitor_user
+        uid: 2002
+        groups: [monitor]
+        state: present
+        create_home: false
+      - name: old_user
+        state: absent # Para remover o usuário
+
+  tasks:
+    - name: Criar grupos se não existirem
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop: [sudo, devops, monitor] # Lista de grupos a serem garantidos
+      become: true
+
+    - name: Gerenciar usuários
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        uid: "{{ item.uid | default(omit) }}" # Usa uid se definido, senão omite
+        groups: "{{ item.groups | join(',') | default(omit) }}"
+        state: "{{ item.state | default('present') }}"
+        create_home: "{{ item.create_home | default(true) }}"
+        shell: /bin/bash
+      loop: "{{ usuarios_a_gerenciar }}"
+      loop_control:
+        label: "{{ item.name }}"
+      become: true
+
+    - name: Remover diretório home para usuários removidos
+      ansible.builtin.file:
+        path: "/home/{{ item.name }}"
+        state: absent
+      when: item.state == "absent" and item.create_home | default(true)
+      loop: "{{ usuarios_a_gerenciar }}"
+      loop_control:
+        label: "{{ item.name }}"
+      become: true

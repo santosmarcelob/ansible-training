@@ -1,0 +1,13 @@
+---
+- name: Gerenciar pacotes no servidor
+  hosts: all
+  vars:
+    nome_do_pacote: apache2
+    estado_do_pacote: present # ou absent para remover
+
+  tasks:
+    - name: Instalar ou remover {{ nome_do_pacote }}
+      ansible.builtin.apt:
+        name: "{{ nome_do_pacote }}"
+        state: "{{ estado_do_pacote }}"
+      become: true

@@ -1,0 +1,12 @@
+---
+- name: Exemplo de indentação
+  hosts: all
+  tasks:
+    - name: Primeira tarefa
+      ansible.builtin.debug:
+        msg: "Esta é a primeira tarefa."
+
+    - name: Segunda tarefa
+      ansible.builtin.debug:
+        msg: "Esta é a segunda tarefa."
+      when: true
