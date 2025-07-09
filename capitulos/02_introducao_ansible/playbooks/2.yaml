@@ -1,0 +1,32 @@
+---
+- name: Configurar Servidor Web Básico
+  hosts: webservers
+  become: true
+  gather_facts: true
+  vars:
+    pacote_web: nginx
+    porta_http: 80
+
+  tasks:
+    - name: Garantir que o pacote web esteja instalado
+      ansible.builtin.apt:
+        name: "{{ pacote_web }}"
+        state: present
+
+    - name: Garantir que o serviço web esteja rodando e habilitado
+      ansible.builtin.service:
+        name: "{{ pacote_web }}"
+        state: started
+        enabled: true
+
+    - name: Abrir porta HTTP no firewall (exemplo com firewalld)
+      ansible.posix.firewalld:
+        port: "{{ porta_http }}/tcp"
+        state: enabled
+        permanent: true
+        immediate: true
+      when: ansible_facts["os_family"] == "RedHat" # Exemplo de condicional
+
+    - name: Exibir mensagem de sucesso
+      ansible.builtin.debug:
+        msg: "Servidor web {{ pacote_web }} configurado com sucesso na porta {{ porta_http }} em {{ inventory_hostname }}."

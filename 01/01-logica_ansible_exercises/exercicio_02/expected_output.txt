@@ -1,3 +1,0 @@
-TASK [Imprimir número de 1 a 10]
-Número: 1
-Número: 10

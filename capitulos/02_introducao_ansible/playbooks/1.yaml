@@ -1,0 +1,15 @@
+---
+- name: Meu primeiro playbook
+  hosts: webservers
+  become: true # Executar tarefas com privilégios de root
+  tasks:
+    - name: Instalar Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+    - name: Iniciar serviço Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

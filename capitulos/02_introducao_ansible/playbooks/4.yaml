@@ -1,0 +1,23 @@
+---
+- name: Instalar e configurar Nginx
+  hosts: webservers
+  become: true # Necessário para instalar pacotes
+
+  tasks:
+    - name: Instalar pacote Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+      when: ansible_facts["os_family"] == "Debian"
+
+    - name: Instalar pacote Nginx (RedHat)
+      ansible.builtin.yum:
+        name: nginx
+        state: present
+      when: ansible_facts["os_family"] == "RedHat"
+
+    - name: Garantir que o serviço Nginx esteja rodando e habilitado
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

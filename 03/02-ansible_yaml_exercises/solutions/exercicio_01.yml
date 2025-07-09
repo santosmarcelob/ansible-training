@@ -1,9 +1,0 @@
----
-- name: Exercicio 01 - Mensagem com debug
-  hosts: localhost
-  gather_facts: false
-
-  tasks:
-    - name: Mostrar mensagem
-      debug:
-        msg: "Este é meu primeiro playbook Ansible!"
