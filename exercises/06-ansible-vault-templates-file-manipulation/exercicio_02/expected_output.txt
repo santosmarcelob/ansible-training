@@ -1,2 +1,0 @@
-name = MeuApp
-port = 8080

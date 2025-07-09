@@ -1,9 +1,0 @@
----
-- name: Exercicio 01 - Fatos do Sistema
-  hosts: localhost
-  gather_facts: true
-
-  tasks:
-    - name: Exibir informações do sistema
-      debug:
-        var: ansible_facts
