@@ -1,5 +1,7 @@
 # Capítulo 2: Introdução ao Ansible
 
+## Questionário: https://forms.gle/y1UJZufHNDWeTjjK9
+
 ## Introdução
 
 Ansible é uma ferramenta de automação de código aberto que simplifica o gerenciamento de configuração, a implantação de aplicações e a orquestração de tarefas em ambientes de TI. Diferente de outras ferramentas que exigem a instalação de agentes nos servidores gerenciados, o Ansible opera de forma "agentless", utilizando SSH para se comunicar com os hosts. Essa simplicidade, combinada com sua sintaxe declarativa e legível em YAML, o tornou uma escolha popular para administradores de sistemas, engenheiros de DevOps e desenvolvedores.
