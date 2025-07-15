@@ -1,10 +1,10 @@
 # Capítulo 3: Fundamentos de YAML
 
+## Questionário: https://forms.gle/JzxtYK6bcAfMyxip6
+
 ## Introdução
 
-Nos capítulos anteriores, você foi introduzido à lógica de programação e ao universo do Ansible, entendendo sua arquitetura e casos de uso. Agora, é hora de aprofundar-se na linguagem que serve como a espinha dorsal de todos os playbooks Ansible: **YAML** (YAML Ain't Markup Language). Embora já tenhamos tocado brevemente no YAML ao discutir variáveis e a estrutura de playbooks, este capítulo se dedicará exclusivamente a desvendar seus fundamentos, focando na prática e na aplicação real.
-
-YAML é uma linguagem de serialização de dados projetada para ser legível por humanos. Sua simplicidade e clareza a tornaram a escolha preferida para arquivos de configuração, especialmente em ferramentas de automação como o Ansible, Kubernetes e Docker Compose. A facilidade de leitura e escrita do YAML, quando comparada a formatos como XML ou JSON, é uma de suas maiores vantagens, permitindo que você se concentre na lógica da sua automação em vez de lutar com a sintaxe.
+**YAML** (YAML Ain't Markup Language) é uma linguagem de serialização de dados projetada para ser legível por humanos. Sua simplicidade e clareza a tornaram a escolha preferida para arquivos de configuração, especialmente em ferramentas de automação como o Ansible, Kubernetes e Docker Compose. A facilidade de leitura e escrita do YAML, quando comparada a formatos como XML ou JSON, é uma de suas maiores vantagens, permitindo que você se concentre na lógica da sua automação em vez de lutar com a sintaxe.
 
 Neste capítulo, vamos explorar a sintaxe essencial do YAML, incluindo pares chave-valor, listas, dicionários, tipos de dados e a crucial importância da indentação. Você aprenderá a construir estruturas de dados complexas que são a base para playbooks Ansible eficazes. O objetivo é que, ao final deste capítulo, você não apenas entenda o YAML, mas se sinta confortável para ler, escrever e depurar arquivos YAML com confiança, acelerando sua jornada no mundo da automação com Ansible.
 

@@ -104,6 +104,11 @@ db1.example.com:
 
 Ambos os formatos são válidos. O formato INI é mais conciso para inventários simples, enquanto o YAML é mais expressivo e flexível para inventários complexos, especialmente quando você precisa definir muitas variáveis ou estruturas de dados aninhadas. Para novos projetos, o formato YAML é geralmente recomendado devido à sua consistência com os playbooks e sua capacidade de lidar com estruturas de dados mais ricas.
 
+Dica Prática: Para exercitar:
+
+Reescreva o exemplo em INI no formato YAML.
+
+Crie um inventário com 2 grupos (web e db), definindo 1 variável por grupo e 1 variável por host.
 
 
 ## Variáveis de Host e de Grupo
