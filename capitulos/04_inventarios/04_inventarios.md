@@ -1,5 +1,7 @@
 # Capítulo 4: Inventários
 
+## Questionário: https://forms.gle/KU1QmcqXJYigrGbu9
+
 ## O que é um Inventário Ansible e Seu Propósito
 
 No mundo da automação, saber *onde* e *em quais sistemas* executar suas tarefas é tão crucial quanto saber *o que* fazer. É aqui que o conceito de **Inventário** entra em jogo no Ansible. O inventário é, em sua essência, um arquivo (ou um conjunto de arquivos) que define os hosts (servidores, dispositivos de rede, máquinas virtuais, etc.) que o Ansible irá gerenciar. Ele serve como a fonte da verdade para todas as informações sobre sua infraestrutura.

@@ -1,0 +1,27 @@
+---
+- name: Gerenciar pacotes com base em um dicionário
+  hosts: all
+  become: yes
+  vars:
+    pacotes:
+      nginx: present
+      apache2: absent
+      curl: latest    
+
+  tasks:
+    - name: Instalar/remover/atualizar pacotes usando dict2items
+      ansible.builtin.package:
+        name: "{{ item.key }}" #nginx
+        state: "{{ item.value }}" #present
+      loop: "{{ pacotes | dict2items }}"
+
+# pacotes:
+#   nginx: present
+#   apache2: absent
+#   curl: latest
+
+# [
+#   {"key": "nginx", "value": "present"},
+#   {"key": "apache2", "value": "absent"},
+#   {"key": "curl", "value": "latest"}
+# ]
