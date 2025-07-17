@@ -1,37 +1,30 @@
-# Ansible-doc
+# Treinamento em Ansible
 
-Exibe informações sobre módulos instalados em bibliotecas Ansible. Exibe uma lista concisa de plugins e suas descrições curtas, fornece uma impressão de suas strings de DOCUMENTAÇÃO e pode criar um pequeno "snippet" que pode ser colado em um manual.
+## Questionário de nivelamento
+https://forms.gle/sPv9srNQUp2hD8eK6
 
-Detalhes: https://docs.ansible.com/ansible/latest/cli/ansible-doc.html
+## Capitulos
+Conteúdo principal: pasta **capitulos**
 
-## Capitulos - Ansible
+Exercicios: **capitulos/XX_tema/XX_exercicios.md**
 
-2-introdução ao ansible
+- 1-introdução a logica de programação
+- 2-introdução ao ansible
+- 3-fundamentos de YAML
+- 4-inventários
+- 5-agrupamento e relação pai-filho
+- 6-variáveis e facts
+- 7-playbooks ansible
+- 8-modulos e plugins
+- 9-handlers
+- 10-roles e collections
+- 11-strategy
+- 12-error handling
+- 13-templating jinja2
+- 14-lookups
+- 15-vault
+- 16-dynamic inventory
 
-3-fundamentos de YAML
+## Simulados
 
-4-inventários
-
-5-agrupamento e relação pai-filho
-
-6-variáveis e facts
-
-7-playbooks ansible
-
-8-modulos e plugins
-
-9-handlers
-
-10-roles e collections
-
-11-strategy
-
-12-error handling
-
-13-templating jinja2
-
-14-lookups
-
-15-vault
-
-16-dynamic inventory
+Simulados dos desafios da prova: pasta **simulados**
