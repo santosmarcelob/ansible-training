@@ -1,63 +1,95 @@
-# Exercícios - Capítulo 2: Introdução ao Ansible
+## Exercícios – Capítulo 2: Introdução ao Ansible
 
-Estes exercícios foram projetados para ajudá-lo a praticar os conceitos abordados no Capítulo 2: Introdução ao Ansible. Eles cobrem desde a criação de inventários básicos até a execução de playbooks simples e a compreensão da idempotência.
+* * *
 
---- 
+### Exercício 1: Inventário com Grupos Hierárquicos e Variáveis
 
-## Exercício 1: Criando um Inventário Estático Básico
+Crie um inventário chamado `inventario.ini` que contenha:
 
-Crie um arquivo de inventário estático chamado `inventario_exercicio1.ini` que contenha:
+*   Um grupo `web_europa` com `web01.eu` e `web02.eu`
+*   Um grupo `web_america` com `web01.us`
+*   Um grupo `todos_webs` com os dois grupos anteriores
+*   Para `web01.eu`, defina a variável `ambiente=producao`
+*   Para o grupo `todos_webs`, defina `ntp_server=ntp.techskills.org`     
 
-*   Um grupo chamado `servidores_web` com os hosts `webserver01.example.com` e `webserver02.example.com`.
-*   Um grupo chamado `servidores_banco` com o host `dbserver01.example.com`.
-*   Defina uma variável de grupo para `servidores_web` chamada `http_port` com o valor `80`.
-*   Defina uma variável de host para `dbserver01.example.com` chamada `db_version` com o valor `PostgreSQL 14`.
+* * *
 
-## Exercício 2: Testando Conectividade com o Módulo `ping`
+### Exercício 2: Criação Condicional com Fatos
 
-Usando o inventário criado no Exercício 1, crie um playbook chamado `ping_all.yml` que utilize o módulo `ansible.builtin.ping` para testar a conectividade com todos os hosts definidos no inventário.
+Crie um playbook `instalar_nginx_condicional.yml` que:
 
-## Exercício 3: Executando um Comando Ad-Hoc
+*   Instale o `nginx` **apenas se** o sistema operacional for Ubuntu **e** tiver pelo menos 2 CPUs
 
-Utilize um comando ad-hoc do Ansible para executar o comando `uptime` em todos os hosts do grupo `servidores_web` do seu inventário.
+* * *
 
-## Exercício 4: Criando um Playbook Simples para Instalar um Pacote
+### Exercício 3: Exibir Tempo de Atividade de Cada Host
 
-Crie um playbook chamado `instalar_nginx.yml` que:
+Crie um playbook `tempo_atividade.yml` que:
 
-*   Seja direcionado ao grupo `servidores_web`.
-*   Utilize `become: true` para elevação de privilégios.
-*   Tenha uma tarefa para instalar o pacote `nginx` (use o módulo `ansible.builtin.package` ou `ansible.builtin.apt`/`ansible.builtin.yum` conforme seu ambiente de teste) e garantir que ele esteja `presente`.
+*   Use `ansible.builtin.shell` com `uptime -p`
+*   Grave o resultado em arquivos locais `logs/uptime_<host>.log`     
 
-## Exercício 5: Gerenciando um Serviço com um Playbook
+* * *
 
-Modifique o playbook `instalar_nginx.yml` do Exercício 4 (ou crie um novo `gerenciar_nginx.yml`) para incluir uma tarefa que garanta que o serviço `nginx` esteja `started` (iniciado) e `enabled` (habilitado para iniciar no boot) nos `servidores_web`.
+### Exercício 4: Loop com Lista de Serviços
 
-## Exercício 6: Entendendo a Idempotência
+Crie um playbook `verificar_servicos.yml` que:
 
-Execute o playbook `gerenciar_nginx.yml` (ou `instalar_nginx.yml` modificado) duas vezes seguidas. Observe a saída do Ansible. Explique o que acontece na segunda execução e por que isso demonstra o conceito de idempotência.
+*   Verifique se `nginx`, `sshd` e `chronyd` estão ativos nos hosts
+*   Use loop com o módulo `ansible.builtin.service_facts` + `debug`     
 
-## Exercício 7: Usando `ansible.cfg` para Definir o Inventário Padrão
+* * *
 
-Crie um arquivo `ansible.cfg` no mesmo diretório do seu inventário e playbooks. Configure-o para que o Ansible use `inventario_exercicio1.ini` como o inventário padrão. Em seguida, execute o playbook `ping_all.yml` sem especificar o inventário na linha de comando (`-i`).
+### Exercício 5: Uso de Filtros e Variáveis Customizadas
 
-## Exercício 8: Definindo Variáveis em `ansible.cfg`
+Crie um playbook `exibir_ambiente.yml` que:
 
-Modifique o `ansible.cfg` para definir `ansible_user=seu_usuario_ssh` e `host_key_checking=False` (apenas para ambiente de laboratório!). Execute um comando ad-hoc ou playbook para verificar se essas configurações estão sendo aplicadas.
+*   Defina `ambiente=produção`
+*   Mostre a string `"Implantando no ambiente: produção"` em caixa alta usando filtro `| upper`     
 
-## Exercício 9: Criando um Playbook com Múltiplas Tarefas
+* * *
 
-Crie um playbook chamado `configurar_servidor.yml` que:
+### Exercício 6: Tarefa Condicional Baseada em Variável
 
-*   Seja direcionado a `servidores_web`.
-*   Instale o pacote `apache2`.
-*   Garanta que o serviço `apache2` esteja iniciado e habilitado.
-*   Copie um arquivo `index.html` simples (crie este arquivo localmente) para `/var/www/html/index.html` nos servidores web.
+Crie um playbook `reiniciar_nginx.yml` que:
 
-## Exercício 10: Explorando Fatos do Ansible
+*   Só reinicia o nginx se a variável `nginx_ativo` for `true`     
 
-Crie um playbook chamado `explorar_fatos.yml` que:
+* * *
 
-*   Seja direcionado a `all` os hosts.
-*   Tenha uma tarefa que use o módulo `ansible.builtin.debug` para exibir o nome do sistema operacional (`ansible_facts.distribution`) e a versão (`ansible_facts.distribution_version`) de cada host.
+### Exercício 7: Agrupamento Dinâmico com `group_by`
 
+Crie um playbook `agrupar_por_os.yml` que:
+
+*   Agrupe os hosts dinamicamente com base no sistema operacional detectado     
+
+* * *
+
+### Exercício 8: Uso de `tags` em múltiplas tarefas
+
+Crie um playbook `servidor_tags.yml` com 3 tarefas:
+
+1.  Instala o `nginx` (tag: `web`)
+2.  Instala o `postgresql` (tag: `db`)
+3.  Instala o `htop` (tag: `tools`)     
+
+Execute com apenas a tag `tools`.
+
+* * *
+
+### Exercício 9: Estrutura de Inventário com `group_vars/`
+
+Crie:
+
+*   Um inventário com grupo `servidores_db`
+*   Um arquivo `group_vars/servidores_db.yml` com a variável `db_port=5432`
+*   Um playbook `mostrar_porta.yml` que exibe a porta do banco com `debug`     
+
+* * *
+
+### Exercício 10: Validação de Rede com `wait_for`
+
+Crie um playbook `validar_porta.yml` que:
+
+*   Usa `wait_for` para verificar se a porta 22 está aberta nos hosts
+*   Define timeout de 3 segundos e exibe mensagem personalizada

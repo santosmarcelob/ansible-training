@@ -1,42 +1,68 @@
+## Exercícios - Fundamentos de YAML no Ansible
 
-# Exercícios – Fundamentos de YAML no Ansible
+* * *
+### Exercício 1: Loop com Dicionário de Dicionários
 
-1. Crie um playbook chamado `vars_simples.yml` que defina três variáveis: `app_name`, `version` e `enable_logs`. Use o módulo `debug` para exibir seus valores.
+Crie uma variável chamada `usuarios`, onde cada chave é um nome de usuário e os valores são dicionários com `uid`, `grupo` e `shell`. Itere sobre esse dicionário e use `ansible.builtin.user` para criar os usuários com seus atributos.
 
-2. Crie uma lista chamada `pacotes_basicos` contendo `htop`, `curl`, `vim` e exiba cada item com uma tarefa em loop.
+* * *
 
-3. Escreva um dicionário com informações de um servidor (`hostname`, `ip`, `env`) e use o módulo `debug` para exibir cada valor separadamente.
+### Exercício 2: Lista de Aplicações por Ambiente
 
-4. Crie uma estrutura com dois usuários (`alice` e `bob`) contendo `uid` e `shell`. Itere sobre a lista criando os usuários com o módulo `user`.
+Crie uma variável `aplicacoes` contendo dicionários com `nome`, `versao` e `ambiente`. Exiba apenas os aplicativos com `ambiente: producao` usando um loop com condição `when`.
 
-5. Crie uma variável chamada `servidores_web`, contendo uma lista de nomes de servidores (ex: `web01`, `web02`, `web03`) e use um loop para exibir mensagens de deploy.
+* * *
 
-6. Use `dict2items` para iterar sobre um dicionário chamado `servicos` com portas e habilitação, e exiba os serviços habilitados.
+### Exercício 3: Agrupamento Dinâmico com `group_by`
 
-7. Crie um bloco de texto literal (`|`) com uma configuração de Nginx simples e grave em um arquivo com o módulo `copy`.
+Dada uma lista de servidores com variáveis `env=dev`, `env=staging`, ou `env=prod`, use o módulo `group_by` para agrupá-los dinamicamente em grupos com base no ambiente.
 
-8. Use um bloco dobrado (`>`) para escrever uma mensagem multilinha que será convertida em uma linha única e grave-a com o módulo `copy`.
+* * *
 
-9. Crie uma variável `valores_testes` contendo exemplos de todos os tipos YAML: string, número, booleano, null e data.
+### Exercício 4: Condicional com Filtros YAML e Booleanos
 
-10. Crie um playbook com uma lista chamada `apps` contendo dicionários com `nome` e `versao`, e use o módulo `debug` para imprimir os dados.
+Crie uma variável `manutencao` com valores possíveis: `yes`, `no`, `null`. Crie uma tarefa que só é executada quando `manutencao` for `yes` (de forma booleana). Use `default(false)` para evitar erro.
 
-11. Escreva um dicionário `config_app` com subchaves como `log_dir`, `port` e `enabled`, e use essas variáveis no módulo `debug`.
+* * *
 
-12. Crie uma estrutura com um dicionário aninhado contendo dois serviços: `ssh` e `http`, com `port` e `status`.
+### Exercício 5: Templates com Blocos Literais e Variáveis
 
-13. Gere um erro proposital de indentação e tente rodar o playbook para visualizar o erro de sintaxe.
+Crie uma variável `nginx_config` que use bloco literal (`|`) com placeholders como `{{ server_name }}` e `{{ root_dir }}`. Grave o conteúdo renderizado usando o módulo `template`.
 
-14. Crie um arquivo YAML com uma lista de grupos e associe usuários a esses grupos usando loops.
+* * *
 
-15. Use filtros como `| lower` e `| join(',')` em tarefas para transformar os valores antes de exibir.
+### Exercício 6: Iteração com `subelements`
 
-16. Crie uma variável com um valor `null` e condicione a execução de uma tarefa à presença de valor (`when`).
+Crie uma variável `grupos` contendo uma lista de grupos, cada um com sua lista de usuários. Use `subelements` para iterar sobre todos os usuários e adicioná-los ao seu respectivo grupo com o módulo `user`.
 
-17. Crie uma variável `deploy` com valor `yes` e condicione a execução de uma tarefa à ativação desse valor booleano.
+* * *
 
-18. Defina um IP como string e use aspas para evitar erro de interpretação.
+### Exercício 7: Combinação de Variáveis com Filtros e `join`
 
-19. Crie comentários explicativos em pelo menos três blocos de um playbook YAML.
+Crie uma variável `pacotes_prod` e outra `pacotes_dev`, e combine-as dinamicamente em uma nova lista `todos_pacotes`. Exiba a lista resultante em uma única string separada por vírgulas usando `| join(', ')`.
 
-20. Crie um playbook chamado `estrutura_complexa.yml` que combina lista, dicionários aninhados e blocos de texto.
+* * *
+
+### Exercício 8: Conversão de Tipos e Validação
+
+Crie uma variável `porta` como string (`"8080"`) e outra chamada `porta_real` que converte essa string para número usando `| int`. Use `debug` para mostrar o tipo e valor de cada uma.
+
+* * *
+
+### Exercício 9: Importação de Variáveis Externas
+
+Crie um playbook que importe um arquivo `vars/ambiente.yml` contendo variáveis do ambiente (`nome`, `url`, `status`), e use essas variáveis em uma mensagem formatada com `debug`.
+
+* * *
+
+### Exercício 10: Estrutura Complexa com Itens Aninhados e Blocos
+
+Crie uma variável `infraestrutura` contendo uma lista de dicionários com:
+
+*   `host`
+*   `servicos` (lista de dicionários com `nome`, `porta`, `status`)
+*   `comentarios` (bloco literal)     
+
+Use `loop` para exibir os serviços ativos de cada host, ignorando os `status: inativo`.
+
+directly from Word or other rich text sources.
