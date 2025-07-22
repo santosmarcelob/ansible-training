@@ -1,32 +1,59 @@
-# Exercícios – Capítulo 6: Variáveis e Fatos
+# Exercícios – Variáveis e Facts no Ansible
 
-##
-1. Crie um playbook que use uma variável chamada nome_do_servico definida dentro da seção vars: e instale esse serviço usando o módulo package.
+### Exercício 1:
 
-##
-2. Modifique o exercício anterior para que a variável nome_do_servico seja passada pela linha de comando com -e, e não esteja definida no playbook.
+Defina uma variável `timezone` em três locais diferentes: `group_vars/all.yml`, `group_vars/web.yml` e `host_vars/web1.yml`. Escreva um playbook que exiba o valor final da variável `timezone` para `web1`.
 
-##
-3. Crie um playbook que defina uma lista de pacotes em uma variável chamada lista_pacotes e instale todos os pacotes dessa lista.
+* * *
 
-##
-4. Crie uma variável config com as chaves porta e ambiente. Exiba essas informações em uma mensagem formatada com o módulo debug.
+### Exercício 2:
 
-##
-5. Crie uma variável chamada mensagem_host no arquivo host_vars do host web1, e exiba essa variável no playbook com o módulo debug.
+Crie um playbook que defina um fato personalizado `custom_role` com `set_fact` e o torne persistente com `cacheable: true`. Em seguida, leia esse fato no próximo playbook executado.
 
-##
-6. Crie um playbook que exiba o sistema operacional e o endereço IP padrão do host usando ansible_facts.
+* * *
 
-##
-7. Crie um playbook que instale apache2 se o sistema for da família Debian e httpd se for da família RedHat, utilizando ansible_facts.os_family.
+### Exercício 3:
 
-##
-8. Crie uma variável porta_http no group_vars do grupo webservers. Em um playbook, exiba essa variável. Depois, execute o playbook sobrescrevendo o valor via -e.
+Use o módulo `ansible.builtin.setup` para coletar apenas as `interfaces de rede` e o `hostname`. Salve a saída em um arquivo local `facts_rede.json`.
 
-##
-9. Crie um playbook que execute o comando uptime, registre a saída em uma variável e exiba essa saída com o módulo debug.
+* * *
 
-##
-10. Crie um playbook que tenha gather_facts: false, e mesmo assim tente acessar ansible_facts.hostname. Use ignore_errors: true para evitar falha na execução.
+### Exercício 4:
 
+Crie um playbook que use `hostvars` para exibir a variável `ansible_facts.default_ipv4.address` de todos os hosts em um único host (por exemplo, `monitor`).
+
+* * *
+
+### Exercício 5:
+
+Utilizando `jinja2` e `ansible_facts`, crie uma estrutura condicional que defina um valor para `timezone` baseado no `ansible_distribution`.
+
+* * *
+
+### Exercício 6:
+
+Defina variáveis com tipos diferentes (`boolean`, `string`, `lista`, `dicionário`) usando `vars`, `defaults`, `group_vars` e `extra_vars`. Execute um playbook que mostre a precedência de cada tipo.
+
+* * *
+
+### Exercício 7:
+
+Crie uma estrutura em `group_vars` que contenha um dicionário `usuarios` com subdados como `uid`, `grupo` e `shell`. Itere sobre os dados para criar usuários nos hosts.
+
+* * *
+
+### Exercício 8:
+
+Desabilite `gather_facts` no início do playbook. Em uma tarefa condicional, colete os fatos com `setup` apenas quando uma variável `coletar_fatos` for verdadeira.
+
+* * *
+
+### Exercício 9:
+
+Use `combine()` para mesclar dois dicionários em tempo de execução com `set_fact`. Use a saída para gerar um novo arquivo de configuração.
+
+* * *
+
+### Exercício 10:
+
+Crie um `playbook` que, ao detectar que o host é da distribuição `Debian`, adicione uma nova variável de repositório; e, se for `RedHat`, adicione outro repositório diferente.

@@ -1,76 +1,80 @@
-# Lista de Exercícios - Inventários Ansible
+### Exercício 1: Inventário INI com Variáveis por Host, Grupo e Herança
 
-## Exercício 1:
-Crie um inventário estático no formato INI com os seguintes grupos e hosts:
+Crie um inventário `inventario_avancado.ini` com:
 
-- **webservers**: `web1.local`, `web2.local`
-- **databases**: `db1.local`
+*   Grupo `webcluster` com hosts `web01`, `web02`
+*   Grupo `dbcluster` com host `db01`
+*   Variável `ansible_user=devops` no grupo `[all:vars]`
+*   Variável `ansible_port=2222` apenas para `web01`
+*   Variável `db_engine=mysql` apenas para `db01`     
 
-Defina a variável `ansible_user=ubuntu` para todos os hosts.
+* * *
 
----
+### Exercício 2: Inventário YAML com Estrutura Hierárquica
 
-## Exercício 2:
-Reescreva o inventário do exercício anterior no formato YAML.
+Crie o equivalente do exercício anterior no formato YAML com herança entre grupos e hosts, chamado `inventario_avancado.yml`.
 
----
+* * *
 
-## Exercício 3:
-Adicione as seguintes variáveis de grupo no inventário YAML:
+### Exercício 3: Crie um Grupo Dinâmico Personalizado com `group_by`
 
-- Para **webservers**: `http_port: 8080`
-- Para **databases**: `db_type: postgres`, `db_version: 15`
+Em um playbook, agrupe hosts dinamicamente com base na variável `zona` definida como `interna` ou `externa`.
 
----
+* * *
 
-## Exercício 4:
-Crie um arquivo `group_vars/webservers.yml` para definir as variáveis:
+### Exercício 4: Estrutura de Inventário com `group_vars` e `host_vars` Separados
 
-- `max_clients: 300`
-- `firewall: true`
+Configure os seguintes arquivos:
 
----
+*   `group_vars/webcluster.yml`: `nginx_version: 1.20`
+*   `host_vars/db01.yml`: `replica: true`, `port: 3306`     
 
-## Exercício 5:
-Crie um arquivo `host_vars/db1.local.yml` com as seguintes variáveis específicas para o host:
+* * *
+
+### Exercício 5: Uso de Inventário Misto (estático INI + dinâmico via script)
+
+Integre um inventário `ini` com um inventário dinâmico fictício (ex: script `.py`) que retorna JSON com mais hosts.
+
+* * *
+
+### Exercício 6: Variáveis com Precedência e Override
+
+Crie uma variável `ambiente`:
+
+*   Em `group_vars/all.yml` com valor `default`
+*   Em `group_vars/webcluster.yml` com valor `web`
+*   Em `host_vars/web01.yml` com valor `individual`     
+
+Use `ansible-inventory --host web01` para verificar qual valor prevalece.
+
+* * *
+
+### Exercício 7: Crie uma Hierarquia de Grupos com `[children]` e `[vars]`
+
+*   Grupo `infraestrutura` com filhos `webcluster`, `dbcluster`
+*   Variável comum em `[infraestrutura:vars]` → `timezone: UTC`     
+
+* * *
+
+### Exercício 8: Listar Grupos e Hosts com `ansible-inventory`
+
+Use `ansible-inventory --graph` e redirecione a saída para `grafo.txt`.
+
+* * *
+
+### Exercício 9: Criar Inventário com Métodos Alternativos (script YAML externo via `inventory_plugins`)
+
+Configure um `inventory.yml` com o plugin `yaml` nativo para listar hosts e grupos.
+
+* * *
+
+### Exercício 10: Usar Tags de Hosts via variáveis personalizadas
+
+Adicione tags personalizadas por host, como:
 
 ```yaml
-backup_enabled: true
-ansible_port: 2222
+tags:
+  - frontend
+  - produção
 ```
-
----
-
-## Exercício 6:
-Utilizando `ansible-inventory`, visualize a estrutura de grupos do inventário criado e salve o resultado do gráfico em um arquivo `inventario.txt`.
-
----
-
-## Exercício 7:
-Crie um inventário com os seguintes grupos e subgrupos:
-
-- **Grupo production** com filhos: `webservers`, `databases`
-- **Grupo development** com filhos: `dev_web`, `dev_db`
-
-Cada subgrupo deve conter pelo menos 1 host.
-
----
-
-## Exercício 8:
-Crie uma variável chamada `ambiente` com valor `producao` no grupo **production**, e `desenvolvimento` no grupo **development**.
-
----
-
-## Exercício 9:
-Use o comando `ansible-inventory` para listar todas as variáveis que se aplicam ao host `web1.local`.
-
----
-
-## Exercício 10:
-Adicione uma variável em `group_vars/all.yml` com o valor padrão:
-
-```yaml
-ansible_user: ansible_admin
-```
-
-Execute o comando para ver a saída completa em JSON do inventário.
+Use um playbook para filtrar e exibir apenas hosts com `produção`.

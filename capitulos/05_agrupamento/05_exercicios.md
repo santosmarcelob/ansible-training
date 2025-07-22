@@ -1,47 +1,67 @@
-# Exercícios – Capítulo 5: Agrupamento e Relação Pai-Filho
+# Exercícios
 
-## 
+* * *
 
-1. Crie um inventário INI com os seguintes grupos e hosts:
-    - Grupo webservers: web1.local, web2.local
-    - Grupo databases: db1.local
-    - Grupo pai production que agrupa webservers e databases.
+### Exercício 1:
 
-##
-2. Defina variáveis de ambiente para production no formato INI:
-    - ambiente=producao
-    - backup_strategy=full
+Crie um inventário INI com os grupos `webservers` e `dbservers`, e um grupo `backend` que contenha os dois grupos como filhos. Adicione ao menos dois hosts por grupo.
 
-##
-3. Crie um inventário YAML equivalente ao do exercício 1, com os mesmos grupos e variáveis herdadas.
+* * *
 
-##
-4. Crie um playbook chamado show_env.yml que imprima o nome do host, o ambiente e a estratégia de backup herdada de seu grupo pai.
+### Exercício 2:
 
-##
-5. Crie um grupo development que contenha os grupos:
-    - dev_web: devweb1.local
-    - dev_db: devdb1.local
+Adicione uma variável `ambiente=producao` ao grupo `backend` e sobrescreva com `ambiente=teste` no grupo `webservers`. Em um playbook, exiba o valor de `ambiente` para cada host.
 
-E defina as variáveis:
-    - ambiente=desenvolvimento
-    - backup_strategy=incremental
+* * *
 
-##
-6. Modifique o playbook show_env.yml para que imprima uma mensagem diferente caso o host pertença ao grupo development.
+### Exercício 3:
 
-##
-7. Crie um inventário com variáveis diferentes para webservers e databases. Por exemplo:
-    - webservers: http_port=80
-    - databases: db_port=5432
+Crie um grupo `infraestrutura` com os filhos `frontend`, `backend` e `monitoramento`. Adicione hosts fictícios a cada grupo. Use `ansible-inventory --graph` para visualizar a hierarquia.
 
-Faça um playbook que imprima a porta configurada.
+* * *
 
-##
-8. Use o comando ansible-inventory para gerar o grafo da hierarquia do inventário em YAML.
+### Exercício 4:
 
-##
-9. Execute um playbook apenas no grupo webservers, mesmo que ele seja filho de production.
+Crie um inventário no formato YAML que contenha os mesmos grupos e subgrupos do exercício anterior. Defina variáveis em `group_vars/` com valores diferentes para `ambiente` por grupo.
 
-##
-10. Escreva um playbook que instale o pacote htop apenas nos servidores do grupo production.
+* * *
+
+### Exercício 5:
+
+Configure `group_vars/backend.yml` com a variável `db_engine=mysql` e `group_vars/dbservers.yml` com `db_engine=postgres`. Em um playbook, exiba qual engine está sendo usada por cada host.
+
+* * *
+
+### Exercício 6:
+
+Crie um inventário com os grupos `staging` e `production`, e um grupo pai chamado `todos`. Atribua um host em comum (`app1.local`) a ambos os grupos filhos e verifique qual variável prevalece, definindo `app_env=staging` e `app_env=production`.
+
+* * *
+
+### Exercício 7:
+
+Adicione o host `web1.local` aos grupos `webservers`, `frontend` e `production`. Crie um playbook que exiba todos os grupos aos quais esse host pertence usando `group_names`.
+
+* * *
+
+### Exercício 8:
+
+Implemente uma hierarquia com 3 níveis:
+
+*   `infra`
+*   `backend`
+*   `dbservers`
+
+E defina a variável `timezone=UTC` em `infra`, `timezone=Europe/Lisbon` em `backend`, e `timezone=America/Sao_Paulo` em `dbservers`. Verifique qual valor será usado por um host `db01.local`.
+
+* * *
+
+### Exercício 9:
+
+Crie uma estrutura em que um host pertence a **dois grupos filhos** de um mesmo **grupo pai**, e defina variáveis conflitantes nos dois filhos. Use `ansible -m debug` para demonstrar qual grupo teve precedência.
+
+* * *
+
+### Exercício 10:
+
+Utilize `group_by` em um playbook para agrupar dinamicamente os hosts com base em uma variável `tipo`. Depois, itere sobre cada novo grupo criado (`tipo_web`, `tipo_db`, etc.) para aplicar tarefas diferentes.
