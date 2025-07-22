@@ -1,49 +1,98 @@
-# Exercícios
+### Exercícios – Playbooks Ansible
 
-##
-1. Escreva um playbook chamado instala_web.yml que:
-   - Instale o pacote nginx em todos os hosts do grupo web.
-   - Garanta que o serviço nginx esteja habilitado e rodando.
+#### **Exercício 1:**
 
-##
-2. Crie um playbook chamado reinicia_servico.yml que:
-    - Execute apenas no host server1.
-    - Reinicie o serviço ssh apenas se a variável reiniciar_ssh for verdadeira.
+Crie um playbook com dois plays:
 
-##
-3. Crie um playbook cria_usuarios.yml que:
-    - Crie os usuários ana, carlos e joao, com shell /bin/bash, usando loop.
+*   O primeiro play deve instalar e iniciar o serviço `nginx` nos hosts do grupo `webservers`, mas apenas se a distribuição for `Debian`.
+*   O segundo play deve instalar e iniciar o serviço `firewalld` nos hosts do grupo `databases`, mas apenas se a distribuição for `RedHat`.
 
-##
-4. Escreva um playbook chamado config_db.yml que:
-    - Execute no grupo databases.
-    - Instale o pacote postgresql.
-    - Registre a saída da instalação em uma variável.
-    - Exiba a saída com debug.
+* * *
 
-##
-5. Crie um playbook copiar_config.yml que:
-    - Copie o arquivo nginx.conf localizado na pasta files/ local para /etc/nginx/nginx.conf no host remoto.
-    - Mostre o diff da mudança (dica: modo de execução, não modifique o playbook).
+#### **Exercício 2:**
 
-##
-6. Escreva um playbook condicional.yml que:
-    - Instale o pacote httpd apenas se a distribuição for CentOS.
+Crie um playbook que:
 
-##
-7. Crie um playbook multi_play.yml que tenha:
-    - Primeiro play para instalar nginx no grupo webservers.
-    - Segundo play para instalar postgresql no grupo dbservers.
+*   Instale os pacotes `htop`, `vim`, `curl` apenas se eles ainda não estiverem presentes no sistema.
+*   Capture a saída da instalação e exiba quantos pacotes foram instalados com um `debug`.
 
-##
-8. Crie um playbook verifica_porta.yml que:
-    - Execute um comando para listar portas em uso com ss -tuln.
-    - Registre a saída e exiba com debug.
+* * *
 
-##
-9. Crie um playbook loop_dict.yml que:
-    - Configure 3 serviços (nginx, sshd, cron) usando loop com lookup('dict', ...).
+#### **Exercício 3:**
 
-##
-10. Crie um playbook valida_sintaxe.yml com qualquer conteúdo válido.
-    - Em seguida, diga qual comando deve ser usado para verificar a sintaxe sem executar o playbook.
+Crie um playbook que tenha um play que:
+
+*   Utilize uma variável `custom_target` definida por linha de comando (via `--extra-vars`) para decidir qual grupo de hosts será usado.
+*   Execute um ping nesses hosts e exiba `msg: "Conectado com sucesso ao {{ inventory_hostname }}"` caso o ping retorne com sucesso.     
+
+* * *
+
+#### **Exercício 4:**
+
+Escreva um playbook que:
+
+*   Gere uma sequência de diretórios `/opt/teste1`, `/opt/teste2`, ... até `/opt/teste10`.
+*   Use `loop` com `lookup('sequence', ...)` para criar os diretórios.     
+
+* * *
+
+#### **Exercício 5:**
+
+Implemente um playbook com as seguintes tarefas:
+
+*   Execute o comando `uptime`, registre a saída.
+*   Se o valor de carga média for superior a 1.00, exiba um alerta com `debug`.     
+
+* * *
+
+#### **Exercício 6:**
+
+Crie um playbook com duas tarefas que:
+
+*   A primeira usa `template` para renderizar um arquivo `/etc/mensagem.j2` para `/etc/mensagem.txt`.
+*   A segunda só deve ser executada **se o conteúdo do arquivo foi modificado** (i.e., se `changed == true`).     
+
+* * *
+
+#### **Exercício 7:**
+
+Crie um playbook que:
+
+*   Crie usuários com base na lista de dicionários abaixo:
+
+```yaml
+usuarios:
+  - nome: joao
+    shell: /bin/bash
+  - nome: maria
+    shell: /bin/zsh
+```
+
+*   Use `loop` com dicionários e filtros para definir os parâmetros dinamicamente.     
+
+* * *
+
+#### **Exercício 8:**
+
+Crie um playbook que:
+
+*   Leia o conteúdo de um arquivo `users.txt` onde cada linha é um nome de usuário.
+*   Para cada linha, crie um usuário no sistema.
+
+* * *
+
+#### **Exercício 9:**
+
+Escreva um playbook que:
+
+*   Instale `nginx`, copie um template com variáveis, reinicie o serviço.
+*   Use `--check` e `--diff` no terminal para validar a execução antes de aplicar.     
+
+* * *
+
+#### **Exercício 10:**
+
+Crie um playbook com múltiplos plays:
+
+*   Primeiro play para instalar e configurar o `nginx` nos webservers.
+*   Segundo play para criar um banco no `PostgreSQL` nos hosts `databases`, **somente se o serviço estiver ativo**.
