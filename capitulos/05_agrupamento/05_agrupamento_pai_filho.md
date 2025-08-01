@@ -1,5 +1,7 @@
 # Capítulo 5: Agrupamento e Relação Pai-Filho
 
+## Questionário: https://forms.gle/6MNmeRkP7QGG4QFE8
+
 ## O Conceito de Agrupamento de Hosts no Ansible
 
 No Ansible, o **agrupamento de hosts** é a maneira fundamental de organizar sua infraestrutura para automação. Em vez de gerenciar cada servidor individualmente, você os categoriza em grupos lógicos com base em suas funções, ambientes, localização geográfica ou qualquer outra característica que faça sentido para sua operação. Essa organização é definida no seu arquivo de inventário e é a base para direcionar playbooks e aplicar configurações de forma eficiente.

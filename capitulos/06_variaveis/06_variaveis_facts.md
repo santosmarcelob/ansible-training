@@ -1,5 +1,7 @@
 # Capítulo 6: Variáveis e Fatos (Facts)
 
+## Questionário: https://forms.gle/FhNAXHF9ev7rvrMcA
+
 ## Variáveis no Ansible: O Coração da Flexibilidade
 
 No Ansible, **variáveis** são um dos conceitos mais poderosos e fundamentais para criar automações flexíveis, reutilizáveis e dinâmicas. Elas permitem que você armazene e reutilize valores em seus playbooks, inventários e roles, adaptando o comportamento da automação a diferentes ambientes, hosts ou situações sem a necessidade de reescrever o código.
