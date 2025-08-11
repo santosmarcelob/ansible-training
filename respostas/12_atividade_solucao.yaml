@@ -1,0 +1,66 @@
+- name: Desafio - Tratamento de Erros com Ansible
+  hosts: all
+  become: false
+  vars:
+    app_env: dev
+
+  tasks:
+
+    - name: Tentar instalar pacote existente
+      apt:
+        name: curl
+        state: present
+        update_cache: true
+      register: resultado_curl
+      ignore_errors: true
+
+    - name: Tentar instalar pacote inexistente
+      apt:
+        name: pacote_invalido
+        state: present
+      register: resultado_falha
+      ignore_errors: true
+
+    - name: Verificar se houve falha ao instalar pacote inválido
+      debug:
+        msg: "A instalação do pacote inválido falhou, mas vamos continuar!"
+      when: resultado_falha.failed
+
+    - name: Bloco com cópia de arquivo e falha proposital
+      block:
+
+        - name: Copiar arquivo de mensagem
+          copy:
+            src: arquivos/mensagem.txt
+            dest: /tmp/mensagem.txt
+
+        - name: Forçar falha proposital
+          command: /bin/false
+
+        - name: Esta tarefa nunca será executada
+          debug:
+            msg: "Isso não será exibido"
+
+      rescue:
+
+        - name: Tratar falha com mensagem de fallback
+          debug:
+            msg: "Ocorreu uma falha no bloco. Executando fallback."
+
+      always:
+
+        - name: Finalizar bloco com mensagem
+          debug:
+            msg: "Fim do bloco de tratamento de erro"
+
+    - name: Validar que o arquivo foi criado corretamente
+      assert:
+        that:
+          - ansible_facts['discovered_interpreter_python'] is defined  # força coleta mínima de facts
+          - "'/tmp/mensagem.txt' in lookup('ansible.builtin.fileglob', '/tmp/*')"
+        fail_msg: "O arquivo /tmp/mensagem.txt não foi encontrado!"
+
+    - name: Interromper se o ambiente não for 'dev'
+      fail:
+        msg: "Execução bloqueada: o ambiente não é 'dev'"
+      when: app_env != 'dev'

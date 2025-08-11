@@ -1,0 +1,17 @@
+- name: Testar diferentes strategies
+  hosts: all
+  gather_facts: false
+  # A strategy será definida fora, no ansible.cfg ou na linha de comando
+  tasks:
+    - name: Aguardar 10 segundos
+      pause:
+        seconds: 10
+
+    - name: Mostrar nome do host
+      debug:
+        msg: "Este é o host {{ inventory_hostname }}"
+
+    - name: Escrever mensagem no arquivo
+      copy:
+        src: arquivos/mensagem.txt
+        dest: /tmp/mensagem_{{ inventory_hostname }}.txt
