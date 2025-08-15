@@ -1,0 +1,56 @@
+- name: Configurar VPN Site-to-Site com WireGuard
+  hosts: [rt-europa, rt-america]
+  become: true
+
+  vars:
+    wg_interface: wg0
+    tunnel_subnet: 10.200.0.0/24
+    keepalive: 25
+    port: 51871  # Porta padrão da VPN site-to-site
+
+  tasks:
+    - name: Instalar WireGuard
+      apt:
+        name: wireguard
+        state: present
+        update_cache: yes
+
+    - name: Criar diretório de configuração
+      file:
+        path: /etc/wireguard
+        state: directory
+        mode: '0700'
+
+    - name: Gerar chave privada
+      command: wg genkey
+      register: private_key
+      changed_when: false
+
+    - name: Calcular chave pública
+      command: "echo {{ private_key.stdout }} | wg pubkey"
+      register: public_key
+      changed_when: false
+
+    - name: Salvar chaves localmente
+      copy:
+        content: "{{ private_key.stdout }}"
+        dest: "/etc/wireguard/privatekey"
+        mode: '0600'
+
+    - name: Salvar public key localmente
+      copy:
+        content: "{{ public_key.stdout }}"
+        dest: "/etc/wireguard/publickey"
+        mode: '0644'
+
+    - name: Criar arquivo de configuração do túnel wg0
+      template:
+        src: wg0.conf.j2
+        dest: /etc/wireguard/wg0.conf
+        mode: '0600'
+
+    - name: Ativar túnel WireGuard
+      systemd:
+        name: wg-{{ wg_interface }}
+        enabled: true
+        state: started

@@ -1,0 +1,6 @@
+---
+- name: Configuração do cluster Apache
+  hosts: webservers
+  become: yes
+  roles:
+    - webserver

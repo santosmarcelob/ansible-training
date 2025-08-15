@@ -1,0 +1,44 @@
+default-lease-time 600;
+max-lease-time 7200;
+
+ddns-update-style interim;
+ddns-domainname "techskills.org";
+ddns-rev-domainname "10.168.192.in-addr.arpa.";
+
+key DHCP_UPDATER {
+  algorithm HMAC-MD5;
+  secret "sua-chave-base64==";
+};
+
+zone techskills.org. {
+  primary 192.168.10.10;
+  key DHCP_UPDATER;
+}
+
+zone 10.168.192.in-addr.arpa. {
+  primary 192.168.10.10;
+  key DHCP_UPDATER;
+}
+
+failover peer "dhcp-failover" {
+  primary;
+  address {{ ansible_host }};
+  port {{ failover_port }};
+  peer address {{ failover_peer }};
+  peer port 520;
+  max-response-delay 60;
+  max-unacked-updates 10;
+  load balance max seconds 3;
+  mclt 1800;
+  split 128;
+}
+
+subnet {{ dhcp_subnet }} netmask {{ dhcp_netmask }} {
+  range {{ dhcp_range_start }} {{ dhcp_range_end }};
+  option routers {{ dhcp_gateway }};
+  option domain-name-servers {{ dhcp_dns }};
+  authoritative;
+  pool {
+    failover peer "dhcp-failover";
+  }
+}

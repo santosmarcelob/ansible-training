@@ -1,0 +1,39 @@
+# playbook_ldap.yml
+- name: Configurar OpenLDAP com OU TI e usuários
+  hosts: dc-eu
+  become: true
+
+  vars:
+    domain: techskills.org
+    base_dn: "dc=techskills,dc=org"
+    ou: "TI"
+    users:
+      - { name: alice, password: "SenhaForte1" }
+      - { name: bob, password: "SenhaForte2" }
+
+  tasks:
+    - name: Instalar slapd e ldap-utils
+      apt:
+        name:
+          - slapd
+          - ldap-utils
+        state: present
+
+    - name: Configurar OU e usuários
+      block:
+        - name: Criar OU TI
+          command: ldapadd -x -D "cn=admin,{{ base_dn }}" -w admin -f ou_ti.ldif
+          args:
+            creates: /etc/ldap/ou_ti.ldif
+
+        - name: Adicionar usuários
+          with_items: "{{ users }}"
+          loop_control:
+            loop_var: user
+          block:
+            - name: Criar arquivo LDIF para {{ user.name }}
+              template:
+                src: user.ldif.j2
+                dest: "/tmp/{{ user.name }}.ldif"
+            - name: Adicionar usuário {{ user.name }}
+              command: ldapadd -x -D "cn=admin,{{ base_dn }}" -w admin -f "/tmp/{{ user.name }}.ldif"

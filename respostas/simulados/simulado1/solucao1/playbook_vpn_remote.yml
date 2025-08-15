@@ -1,0 +1,39 @@
+- name: Configurar VPN Remote Access com WireGuard
+  hosts: rt-europa
+  become: true
+
+  vars:
+    wg_interface: wg1
+    client_ip: 10.20.20.20/32
+    server_ip: 10.20.20.1/24
+    port: 51820
+
+  tasks:
+    - name: Criar par de chaves do servidor
+      shell: wg genkey | tee /etc/wireguard/server.key | wg pubkey > /etc/wireguard/server.pub
+      creates: /etc/wireguard/server.key
+
+    - name: Criar par de chaves do cliente
+      shell: wg genkey | tee /etc/wireguard/client.key | wg pubkey > /etc/wireguard/client.pub
+      creates: /etc/wireguard/client.key
+
+    - name: Criar configuração do servidor
+      copy:
+        dest: /etc/wireguard/wg1.conf
+        mode: 0600
+        content: |
+          [Interface]
+          Address = {{ server_ip }}
+          ListenPort = {{ port }}
+          PrivateKey = {{ lookup('file', '/etc/wireguard/server.key') }}
+
+          [Peer]
+          PublicKey = {{ lookup('file', '/etc/wireguard/client.pub') }}
+          AllowedIPs = {{ client_ip }}
+          PersistentKeepalive = 25
+
+    - name: Ativar túnel WireGuard Remote
+      systemd:
+        name: wg-{{ wg_interface }}
+        enabled: true
+        state: started

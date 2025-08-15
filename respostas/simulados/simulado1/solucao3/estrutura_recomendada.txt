@@ -1,0 +1,10 @@
+/data/ansible/
+├── backup.yaml
+├── firewall.yaml
+├── group_vars/
+│   └── all/vault.yml  ← variáveis sensíveis com Ansible Vault
+├── templates/
+│   └── rsync-backup.service.j2
+├── files/
+│   └── nftables.conf
+└── vault_pass.txt     ← senha

@@ -1,0 +1,43 @@
+---
+- name: Deploy de servidor web com conteúdo dinâmico
+  hosts: web-server
+  become: true
+  vars:
+    site_path: /var/www/html/index.html
+
+  tasks:
+    - name: Instalar pacote nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Criar diretório raiz do site
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Criar página index.html
+      ansible.builtin.copy:
+        dest: "{{ site_path }}"
+        content: |
+          <h1>Bem-vindo ao site da TechSkills Solutions</h1>
+          <p>Deploy automatizado com Ansible</p>
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify: Reiniciar nginx
+
+    - name: Garantir que nginx está ativo e habilitado no boot
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Reiniciar nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

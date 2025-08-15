@@ -1,0 +1,4 @@
+/data/ansible/
+├── client.yaml
+├── templates/
+│   └── thunderbird-profile.ini.j2

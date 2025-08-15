@@ -1,0 +1,13 @@
+/data/ansible/
+├── monitoramento.yaml
+├── certificados.yaml
+├── group_vars/
+│   └── all/
+│       └── vault.yml     # caso precise guardar chaves/certificados sensíveis
+├── templates/
+│   ├── icinga2-vpn.conf.j2
+│   ├── icinga2-icmp.conf.j2
+│   └── icinga2-https.conf.j2
+└── files/
+    ├── crl.pem
+    └── ca.pem

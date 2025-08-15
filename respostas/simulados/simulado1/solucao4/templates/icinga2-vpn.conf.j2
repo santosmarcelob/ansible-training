@@ -1,0 +1,11 @@
+object Host "vpn-site" {
+  address = "10.200.0.1"
+  check_command = "ping"
+  vars.vpn = true
+}
+
+apply Service "vpn-connectivity" {
+  import "generic-service"
+  check_command = "ping"
+  assign where host.vars.vpn
+}

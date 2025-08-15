@@ -1,0 +1,36 @@
+# playbook_dhcp.yml
+- name: Configurar servidor DHCP com failover e DDNS
+  hosts: dc-eu
+  become: true
+
+  vars:
+    dhcp_range_start: 192.168.10.100
+    dhcp_range_end: 192.168.10.200
+    dhcp_subnet: 192.168.10.0
+    dhcp_netmask: 255.255.255.0
+    dhcp_gateway: 192.168.10.1
+    dhcp_dns: 192.168.10.10
+    failover_peer: dc-eu2
+    failover_port: 519
+
+  tasks:
+    - name: Instalar o isc-dhcp-server
+      apt:
+        name: isc-dhcp-server
+        state: present
+        update_cache: yes
+
+    - name: Configurar DHCP com failover e DDNS
+      template:
+        src: dhcpd.conf.j2
+        dest: /etc/dhcp/dhcpd.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: Restart DHCP
+
+  handlers:
+    - name: Restart DHCP
+      service:
+        name: isc-dhcp-server
+        state: restarted

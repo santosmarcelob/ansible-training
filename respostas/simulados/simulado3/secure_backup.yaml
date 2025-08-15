@@ -1,0 +1,139 @@
+---
+- name: Configuração do servidor de backup seguro
+  hosts: secure-backup-server
+  become: true
+  vars_files:
+    - vault.yml  # contém chaves e senha criptografadas
+
+  tasks:
+    - name: Instalar pacotes necessários
+      apt:
+        name:
+          - rsync
+          - openssh-server
+          - nftables
+          - logrotate
+          - mailutils
+        state: present
+        update_cache: yes
+
+    - name: Criar diretório para backups
+      file:
+        path: "/secure-backups"
+        state: directory
+        mode: '0750'
+        owner: root
+        group: root
+
+    - name: Configurar firewall para permitir apenas rede 10.100.0.0/24
+      copy:
+        dest: /etc/nftables.conf
+        content: |
+          table inet filter {
+            chain input {
+              type filter hook input priority 0;
+              policy drop;
+              iif lo accept
+              ip saddr 10.100.0.0/24 tcp dport 22 accept
+              ct state established,related accept
+            }
+          }
+      notify: Reiniciar firewall
+
+    - name: Copiar chave pública autorizada
+      authorized_key:
+        user: backupuser
+        state: present
+        key: "{{ backup_ssh_pubkey }}"
+
+    - name: Configurar rsync com log
+      copy:
+        dest: /etc/rsyncd.conf
+        content: |
+          pid file = /var/run/rsyncd.pid
+          log file = /var/log/secure-backup.log
+          [files]
+            path = /secure-backups
+            comment = Secure Backup
+            read only = false
+            auth users = backupuser
+            secrets file = /etc/rsyncd.secrets
+      notify: Reiniciar rsync
+
+    - name: Configurar credenciais do rsync
+      copy:
+        dest: /etc/rsyncd.secrets
+        content: "backupuser:{{ backup_password }}"
+        mode: '0600'
+      notify: Reiniciar rsync
+
+    - name: Configurar logrotate para rsync
+      copy:
+        dest: /etc/logrotate.d/secure-backup
+        content: |
+          /var/log/secure-backup.log {
+              weekly
+              rotate 4
+              compress
+              missingok
+              notifempty
+          }
+  handlers:
+  - name: Reiniciar rsync
+    service:
+      name: rsync
+      state: restarted
+
+  - name: Reiniciar firewall
+    service:
+      name: nftables
+      state: restarted
+
+- name: Configuração dos clientes de backup
+  hosts: secure-backup-clients
+  become: true
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Instalar rsync e ssh
+      apt:
+        name:
+          - rsync
+          - openssh-client
+        state: present
+        update_cache: yes
+
+    - name: Criar tarefa de backup a cada 15 minutos
+      cron:
+        name: "Backup seguro"
+        minute: "*/15"
+        job: >
+          rsync -az --update /var/mail /var/www/html
+          backupuser@{{ hostvars['secure-backup-server']['ansible_host'] }}:/secure-backups/{{ inventory_hostname }}/files
+          || echo "Backup falhou em $(date)" | mail -s "Falha no backup" admin@empresa.com
+  handlers:
+  - name: Reiniciar rsync
+    service:
+      name: rsync
+      state: restarted
+
+  - name: Reiniciar firewall
+    service:
+      name: nftables
+      state: restarted
+
+# ========================
+# HANDLERS COMPARTILHADOS
+# ========================
+
+# handlers:
+#   - name: Reiniciar rsync
+#     service:
+#       name: rsync
+#       state: restarted
+
+#   - name: Reiniciar firewall
+#     service:
+#       name: nftables
+#       state: restarted

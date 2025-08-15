@@ -1,0 +1,6 @@
+dn: uid={{ user.name }},ou=TI,dc=techskills,dc=org
+objectClass: inetOrgPerson
+uid: {{ user.name }}
+sn: {{ user.name | capitalize }}
+cn: {{ user.name | capitalize }}
+userPassword: {{ user.password | password_hash('sha256') }}

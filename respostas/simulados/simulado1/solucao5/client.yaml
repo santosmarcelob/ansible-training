@@ -1,0 +1,65 @@
+- name: Configurar client-eu
+  hosts: client-eu
+  become: true
+
+  vars:
+    user_name: alice
+    user_email: alice@techskills.org
+    recipient_email: bob@techskills.org
+    message_body: "Bonjour!"
+    thunderbird_profile: /home/{{ user_name }}/.thunderbird/techskills.default
+
+  tasks:
+    - name: Garantir que o cliente receba IP via DHCP
+      lineinfile:
+        path: /etc/network/interfaces
+        regexp: '^iface .* inet'
+        line: 'iface {{ ansible_default_ipv4.interface }} inet dhcp'
+      notify: Restart networking
+
+    - name: Instalar Thunderbird e msmtp
+      apt:
+        name:
+          - thunderbird
+          - msmtp
+        state: present
+        update_cache: yes
+
+    - name: Criar diretório do perfil do Thunderbird
+      file:
+        path: "{{ thunderbird_profile }}"
+        state: directory
+        owner: "{{ user_name }}"
+        mode: '0700'
+
+    - name: Criar configuração de conta no Thunderbird (simulada)
+      template:
+        src: thunderbird-profile.ini.j2
+        dest: "{{ thunderbird_profile }}/prefs.js"
+        owner: "{{ user_name }}"
+        mode: '0644'
+
+    - name: Criar arquivo de email temporário
+      copy:
+        dest: "/home/{{ user_name }}/bonjour.txt"
+        content: |
+          To: {{ recipient_email }}
+          From: {{ user_email }}
+          Subject: Teste Ansible
+          
+          {{ message_body }}
+        owner: "{{ user_name }}"
+        mode: '0644'
+
+    - name: Enviar email via msmtp
+      become_user: "{{ user_name }}"
+      shell: |
+        cat /home/{{ user_name }}/bonjour.txt | msmtp {{ recipient_email }}
+      args:
+        executable: /bin/bash
+
+  handlers:
+    - name: Restart networking
+      service:
+        name: networking
+        state: restarted

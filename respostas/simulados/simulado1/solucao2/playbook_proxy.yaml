@@ -1,0 +1,49 @@
+# playbook_proxy.yml
+- name: Configurar proxy reverso com IP flutuante
+  hosts: dc-eu
+  become: true
+
+  vars:
+    virtual_ip: 192.168.10.100
+    web_nodes:
+      - 192.168.10.11
+      - 192.168.10.12
+
+  tasks:
+    - name: Instalar nginx e keepalived
+      apt:
+        name:
+          - nginx
+          - keepalived
+        state: present
+        update_cache: yes
+
+    - name: Configurar nginx como proxy reverso
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify: Restart Nginx
+
+    - name: Habilitar redirecionamento HTTP para HTTPS
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: 'listen 80;'
+        line: 'return 301 https://$host$request_uri;'
+        state: present
+
+    - name: Configurar Keepalived
+      template:
+        src: keepalived.conf.j2
+        dest: /etc/keepalived/keepalived.conf
+      notify: Restart Keepalived
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Restart Keepalived
+      service:
+        name: keepalived
+        state: restarted

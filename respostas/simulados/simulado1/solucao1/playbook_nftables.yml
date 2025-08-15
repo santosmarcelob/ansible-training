@@ -1,0 +1,51 @@
+- name: Configurar Firewall com NFTables
+  hosts: [rt-europa, rt-america]
+  become: true
+
+  tasks:
+    - name: Instalar nftables
+      apt:
+        name: nftables
+        state: present
+        update_cache: yes
+
+    - name: Configurar regras de firewall
+      copy:
+        dest: /etc/nftables.conf
+        mode: '0644'
+        content: |
+          #!/usr/sbin/nft -f
+          table inet filter {
+            chain input {
+              type filter hook input priority 0; policy drop;
+              ct state established,related accept
+              iif "lo" accept
+              ip protocol icmp accept
+
+              # Acesso externo permitido
+              tcp dport { 53, 80, 443, 25, 110, 143, 587, 993 } accept
+              udp dport 53 accept
+
+              # Acesso à VPN (site-to-site e remote)
+              udp dport { 51820, 51871 } accept
+            }
+
+            chain forward {
+              type filter hook forward priority 0; policy drop;
+              ct state established,related accept
+              ip saddr 192.168.0.0/16 accept
+              ip daddr 192.168.0.0/16 accept
+              ip saddr 10.20.20.20 accept
+              ip daddr 10.20.20.20 accept
+            }
+
+            chain output {
+              type filter hook output priority 0; policy accept;
+            }
+          }
+
+    - name: Ativar e iniciar o serviço nftables
+      systemd:
+        name: nftables
+        enabled: true
+        state: restarted

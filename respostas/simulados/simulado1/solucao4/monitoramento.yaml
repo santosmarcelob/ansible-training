@@ -1,0 +1,42 @@
+- name: Instalar e configurar Icinga2
+  hosts: monitor
+  become: true
+
+  tasks:
+    - name: Instalar Icinga2 e plugins
+      apt:
+        name:
+          - icinga2
+          - monitoring-plugins
+        state: present
+        update_cache: true
+
+    - name: Habilitar e iniciar Icinga2
+      systemd:
+        name: icinga2
+        enabled: true
+        state: started
+
+    - name: Copiar configuração de monitoramento da VPN
+      template:
+        src: templates/icinga2-vpn.conf.j2
+        dest: /etc/icinga2/conf.d/vpn.conf
+      notify: Restart Icinga2
+
+    - name: Copiar configuração de ICMP dos roteadores
+      template:
+        src: templates/icinga2-icmp.conf.j2
+        dest: /etc/icinga2/conf.d/icmp.conf
+      notify: Restart Icinga2
+
+    - name: Copiar configuração de sites HTTPS
+      template:
+        src: templates/icinga2-https.conf.j2
+        dest: /etc/icinga2/conf.d/https.conf
+      notify: Restart Icinga2
+
+  handlers:
+    - name: Restart Icinga2
+      systemd:
+        name: icinga2
+        state: restarted

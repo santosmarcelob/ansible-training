@@ -1,0 +1,34 @@
+- name: Publicar certificados da CA local
+  hosts: ca
+  become: true
+
+  tasks:
+    - name: Criar diretório público da CA
+      file:
+        path: /var/www/html/certs
+        state: directory
+        mode: '0755'
+
+    - name: Copiar CRL para publicação
+      copy:
+        src: files/crl.pem
+        dest: /var/www/html/certs/crl.pem
+        mode: '0644'
+
+    - name: Copiar certificado da CA
+      copy:
+        src: files/ca.pem
+        dest: /var/www/html/certs/ca.pem
+        mode: '0644'
+
+    - name: Instalar Apache2 (caso não tenha)
+      apt:
+        name: apache2
+        state: present
+        update_cache: true
+
+    - name: Garantir que Apache esteja ativo
+      systemd:
+        name: apache2
+        enabled: true
+        state: started

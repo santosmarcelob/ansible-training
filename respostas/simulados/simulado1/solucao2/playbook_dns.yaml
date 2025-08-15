@@ -1,0 +1,36 @@
+# playbook_dns.yml
+- name: Configurar servidor DNS primário
+  hosts: dc-eu
+  become: true
+
+  vars:
+    zone_name: techskills.org
+    reverse_zone: 10.168.192.in-addr.arpa
+    dns_peer: dc-eu2
+    tsig_key_name: TRANSFER_KEY
+    tsig_key_secret: sua-chave-base64==
+
+  tasks:
+    - name: Instalar BIND9
+      apt:
+        name: bind9
+        state: present
+        update_cache: yes
+
+    - name: Copiar arquivos de zona e config
+      template:
+        src: named.conf.options.j2
+        dest: /etc/bind/named.conf.options
+      notify: Restart Bind
+
+    - name: Adicionar zona direta e reversa
+      template:
+        src: named.conf.local.j2
+        dest: /etc/bind/named.conf.local
+      notify: Restart Bind
+
+  handlers:
+    - name: Restart Bind
+      service:
+        name: bind9
+        state: restarted

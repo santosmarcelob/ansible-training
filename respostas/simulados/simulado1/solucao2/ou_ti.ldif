@@ -1,0 +1,3 @@
+dn: ou=TI,dc=techskills,dc=org
+objectClass: organizationalUnit
+ou: TI

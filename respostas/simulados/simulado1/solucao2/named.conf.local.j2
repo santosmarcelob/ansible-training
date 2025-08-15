@@ -1,0 +1,20 @@
+key TRANSFER_KEY {
+  algorithm hmac-md5;
+  secret "{{ tsig_key_secret }}";
+};
+
+zone "{{ zone_name }}" {
+  type master;
+  file "/etc/bind/db.{{ zone_name }}";
+  allow-transfer { {{ dns_peer }}; };
+  also-notify { {{ dns_peer }}; };
+  notify yes;
+  key TRANSFER_KEY;
+};
+
+zone "{{ reverse_zone }}" {
+  type master;
+  file "/etc/bind/db.{{ reverse_zone }}";
+  allow-transfer { {{ dns_peer }}; };
+  key TRANSFER_KEY;
+};

@@ -1,0 +1,32 @@
+# /data/ansible/firewall.yaml
+- name: Aplicar regras de firewall NFTables
+  hosts: all_roteadores  # grupo de RT-EUROPA, RT-AMERICA, etc
+  become: true
+
+  tasks:
+    - name: Instalar pacote nftables
+      apt:
+        name: nftables
+        state: present
+        update_cache: true
+
+    - name: Copiar regras nftables
+      copy:
+        src: files/nftables.conf
+        dest: /etc/nftables.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Reiniciar nftables
+
+    - name: Ativar e iniciar nftables
+      systemd:
+        name: nftables
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reiniciar nftables
+      systemd:
+        name: nftables
+        state: restarted

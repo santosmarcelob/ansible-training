@@ -1,0 +1,47 @@
+# /data/ansible/backup.yaml
+- name: Configurar backup entre client-eu e backup.techskills.org
+  hosts: client-eu
+  become: true
+  vars_files:
+    - group_vars/all/vault.yml
+
+  tasks:
+    - name: Criar diretório de destino no servidor de backup
+      ansible.builtin.shell: |
+        ssh -i /home/{{ vault_rsync_user }}/.ssh/id_rsa {{ vault_rsync_user }}@backup.techskills.org "mkdir -p /mnt/backup/{{ inventory_hostname }}"
+      args:
+        executable: /bin/bash
+
+    - name: Criar serviço systemd para rsync
+      template:
+        src: rsync-backup.service.j2
+        dest: /etc/systemd/system/rsync-backup.service
+        mode: '0644'
+      notify: Restart backup service
+
+    - name: Criar timer para executar a cada 30 minutos
+      copy:
+        dest: /etc/systemd/system/rsync-backup.timer
+        content: |
+          [Unit]
+          Description=Executa backup de e-mails
+
+          [Timer]
+          OnBootSec=5min
+          OnUnitActiveSec=30min
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Ativar e iniciar o timer
+      systemd:
+        name: rsync-backup.timer
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Restart backup service
+      systemd:
+        name: rsync-backup.service
+        state: restarted

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Informações do Servidor</title>
+</head>
+<body>
+    <h1>Informações do Servidor</h1>
+    <p>Hostname: {{ inventory_hostname }}</p>
+    <p>Endereço IP: {{ ansible_default_ipv4.address }}</p>
+    <p>Sistema Operacional: {{ ansible_distribution }} {{ ansible_distribution_version }}</p>
+</body>
+</html>

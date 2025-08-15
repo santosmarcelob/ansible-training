@@ -1,0 +1,17 @@
+object Host "web1" {
+  address = "192.168.10.11"
+  vars.http_vhosts["https"] = {
+    http_uri = "/"
+    http_ssl = true
+  }
+  check_command = "http"
+}
+
+object Host "web2" {
+  address = "192.168.10.12"
+  vars.http_vhosts["https"] = {
+    http_uri = "/"
+    http_ssl = true
+  }
+  check_command = "http"
+}
