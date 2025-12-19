@@ -1,3 +1,9 @@
+[PT] Material de treinamento desenvolvido e ministrado a competidor da WorldSkills, organizada pelo SENAI, no exercício da função de instrutor de Ansible.
+
+[EN] Training material developed and delivered to a WorldSkills competitor, organized by SENAI, in the role of Ansible instructor.
+
+
+----
 # Treinamento em Ansible
 
 ## Questionário de nivelamento
